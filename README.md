@@ -1,51 +1,46 @@
 tornado-web
 ===
 
-[shadowvpn-win](https://github.com/evolsnow/shado简单的图片分享网站, 基于tornado convenient.
+[tornado-web](https://github.com/evolsnow/tornado-web)是在学习tornado时自己练手的简单(简陋)图片分享网站.
 
-It is a port of [ShadowVPN](https://github.com/clowwindy/ShadowVPN) created by [@clowwindy](https://github.com/clowwindy)
-
-Features
+注意
 ---
 
-* Support [chnroutes](https://github.com/fivesheep/chnroutes) to split traffic
+* 项目由边学边写而成,对tornado的一些模块十分熟悉,所以代码仍有较大的优化空间;
 
-* Adding thousands of route tables only takes a few seconds
+* 前端引用了bootstrap, 未对网站进一步美化;
 
-Usage
+* jquery等脚本由需求驱动而学,而写,所以并不专业;
+
+特点
 ---
 
-* Before running ShadowVPN, You need to install the TUN/TAP driver first:
-> + For [32-bit Windows](http://build.openvpn.net/downloads/releases/tap-windows-9.9.2_3.exe)
-> + For [64-bit Windows](http://build.openvpn.net/downloads/releases/tap-windows-9.21.0.exe)
+* 支持网站的一些基本功能:注册,登录验证,图片上传,添加评论等;
 
-* After installation, rename the new interface  to 'Tun'
+* 后台数据库尝试使用了[mongodb](https://www.mongodb.org/), 通过[motor](https://motor.readthedocs.org/)操作发挥其异步特性;
 
-* Download zip file of source code and decompress
+* 支持新图片上传后其他用户浏览时的实时提醒,基于http的长连接,考虑兼容性暂采用ajax,后期会将websocket方式整合进去;
 
-* Configure '[client.conf](https://github.com/evollost/shadowvpn-win/blob/master/client.conf)', for more information, look through the this file
+* 支持"获取最新"和"加载更多"功能,涉及数据库取出元素的排序问题, 详见代码;
 
-* Just double click '[start_vpn.bat](https://github.com/evollost/shadowvpn-win/blob/master/start_vpn.bat)' or run this in cmd:
-```bash
-shadowvpn.exe -c client.conf
+用法
+---
+
+* Python2测试通过,Python3可能需要更改如下地方:
+> import StringIO --> from io import StringIO
+> import Image    --> from PIL import Image
+
+* 依赖均写在main.py的头部,暂未拆分模块;
+
+* 请生成并修改cookie secrets字段:
+```python
+import base64
+import uuid
+print base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes)
 ```
-
-* By default shadowvpn runs in chnroutes mode,you can turn back to global mode 
-by editing '[client_up.bat](https://github.com/evollost/shadowvpn-win/blob/master/client_up.bat)':
-```bash
-SET chnroutes="false"
-```
-
-* You can also update the chnroutes file by editing .txt files.
 
 
 License
 ---
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-You should have received a copy of the GNU General Public License
-along with this program. If not, see [GNU](http://www.
+This program is released under the [MIT License](http://www.opensource.org/licenses/MIT).
