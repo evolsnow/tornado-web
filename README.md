@@ -27,9 +27,10 @@ tornado-web
 ---
 
 * Python2测试通过,Python3可能需要更改如下地方:
-> import StringIO --> from io import StringIO
-> import Image    --> from PIL import Image
-
+```python
+import StringIO --> from io import StringIO
+import Image    --> from PIL import Image
+```
 * 依赖均写在main.py的头部,暂未拆分模块;
 
 * 请生成并修改cookie secrets字段:
