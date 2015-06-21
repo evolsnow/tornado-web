@@ -5,6 +5,17 @@
     <button type="button" onclick="getnewpic()">获取最新</button>
     <div id="new"></div>
 
+<button type="button" id=id1 onclick="addcomment(this.id)">评论</button>
+<div id=msid1>main div</div>
+<p></p>
+
+
+<div id=divsid1c style="display:none">
+<input type="text" id=tsid1c placeholder="添加评论..."/>
+<button type="button" id=sid1  onclick="submitcomment(this.id)">提交</button>
+<button type="button" id=id1c  onclick="cancelcomment(this.id)">取消</button>
+</div>
+
     {% for pic in piclist %}
     	{%raw modules.Picture(pic) %}
     {% end %}

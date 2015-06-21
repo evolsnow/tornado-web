@@ -22,13 +22,14 @@ class Application(tornado.web.Application):
                 (r"/", MainHandler),
 		(r"/register", RegHandler),
                 (r"/login", LoginHandler),
-                (r"/loadmore", LoadmoreHandler),
+                (r"/loadmore", LoadMoreHandler),
 		(r"/upload",UploadFileHandler),
                 (r"/ajax", NewPicNotifyHandler),
+                (r"/addcomment", AddCommentHandler),
                 (r"/getnewpic", GetNewPicHandler)]
         settings = dict(
                 cookie_secret=
-                "__TO_DO__",
+                "19N9ViOvRmmikCmFiW4ZBYgo17MZ6k+auNmdk+Aa18I=",
                 login_url="/login",
                 xsrf_cookies=True,
                 debug=True,
@@ -182,10 +183,12 @@ class GetNewPicHandler(BaseHandler):
         finally:
             return
 
-class LoadmoreHandler(BaseHandler):
+class LoadMoreHandler(BaseHandler):
     '''
     图片加载函数,一次加载options.loadnum张,
     如果最后加载张数不达,则全部加载
+    具体方法为渲染div,第一次写n张
+    第二次写2n张...
     '''
     @tornado.gen.coroutine
     def get(self):
@@ -205,9 +208,6 @@ class LoadmoreHandler(BaseHandler):
             self.write(string)
 
 class NewPicNotifyHandler(BaseHandler):
-    '''
-    http长连接保持更新通知
-    '''
     callbacks = set()
     users = set()
 
@@ -238,6 +238,14 @@ class NewPicNotifyHandler(BaseHandler):
                 callback(message)
             finally:
                 cls.callbacks = set()
+
+class AddCommentHandler(BaseHandler):
+    def post(self):
+        user = self.get_secure_cookie("username")
+        comment = self.get_argument("comment")
+        time.sleep(0.5)
+        self.write("<br />")
+        self.write(comment)
 
 class PictureModule(tornado.web.UIModule):
     '''

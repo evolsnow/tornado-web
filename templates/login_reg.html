@@ -1,6 +1,6 @@
 {% extends "main.html" %}
 {% block body %}
-    <div class="container">
+
 	{% if next %}
 		<form class="form-signin"  action="/{{ action }}?next={{next}}" method="post" >
 	{% else %}
@@ -14,7 +14,10 @@
         <input type="password" name="password" id="inputPassword" class="form-control" placeholder="密码" required>
 	<br />
         <button class="btn btn-lg btn-primary btn-block" type="submit">{{ button_name }}</button>
+	{% if action == "login" %}
+	<br />
+	<p align=right><a href=/register>没有帐号?现在注册</a> </p>
+	{% end %}
       </form>
 
-    </div> 
 {% end %}

@@ -43,49 +43,64 @@ function loadmorepic()
   });
 };
 
-//add comments
-function addcomment(add_button_id)
-{
-  var div_id ="#divs" + add_button_id + "c";
-  $(div_id).slideToggle("slow");
-};
 
-//submit comments
-function submitcomment(submit_button_id)
-{
 function getCookie(name) 
 {
     var c = document.cookie.match("\\b" + name + "=([^;]*)\\b");
     return c ? c[1] : undefined;
-});
+};
 
+//add comments
+function addcomment(add_button_id)
+{
+  var user = getCookie("user")+""
+    if (user == "undefined")
+	{
+	location.href ="/login";
+	}
+    else
+	{
+  var div_id ="#divs" + add_button_id + "c";
+  $(div_id).slideToggle("fast");
+	};
+};
+
+
+//submit comments
+function submitcomment(submit_button_id)
+{
 
     var main_id = "#m" + submit_button_id;
     var div_id = "#div" + submit_button_id + "c";
-    var text_id = "#t" + submit_button_id;
-    var word = $(#text_id).val(); //获取文本框的输入
+    var text_id = "#t" + submit_button_id + "c";
+    var word = $(text_id).val();
     data={
         comment:word,
         _xsrf:getCookie("_xsrf"),
         id:submit_button_id
-        }
+        };
+
     $.post("/addcomment", data, function(result,status){
             if(status == "success")
             {
-		$(main_id).append(result)
+		$(main_id).append(result);
             }
             else
             {
                 alert("提交 失败");
             }
         });
-        $(div_id).fadeOut();
+        $(div_id).slideToggle("fast");
+	$(text_id).val("");
 };
 
 //cancel comments
 function cancelcomment(cancel_button_id)
 {
-    var div_id = "#divs" + submit_button_id;
-    $(div_id).fadeOut();
+    var div_id = "#divs" + cancel_button_id;
+    var text_id = "#ts" + cancel_button_id;
+    $(text_id).val("");
+    $(div_id).slideToggle();
+
 };
 
