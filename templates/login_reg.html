@@ -1,6 +1,6 @@
 {% extends "main.html" %}
 {% block body %}
-
+    <div class="container">
 	{% if next %}
 		<form class="form-signin"  action="/{{ action }}?next={{next}}" method="post" >
 	{% else %}
@@ -19,5 +19,5 @@
 	<p align=right><a href=/register>没有帐号?现在注册</a> </p>
 	{% end %}
       </form>
-
+    </div>
 {% end %}
