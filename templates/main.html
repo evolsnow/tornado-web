@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>图片分享平台</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ static_url("css/bootstrap.min.css") }}" rel="stylesheet">
+
+    <!-- Custom styles  -->
+    <link href="{{ static_url("css/personal.css") }}" rel="stylesheet">
+    <link href="{{ static_url("css/signin.css") }}" rel="stylesheet">
+    <link rel="icon" href="{{ static_url("favicon.ico") }}">
+
+  </head>
+
+  <body>
+  {% block body %}{% end %}
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="{{ static_url("js/jquery.min.js") }}"></script>
+    <script src="{{ static_url("js/personal.js") }}"></script>
+    <script src="{{ static_url("js/bootstrap.min.js") }}"></script>
+  </body>
+</html>
+

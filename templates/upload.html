@@ -1,0 +1,16 @@
+{% extends "main.html" %}
+{% block body %}
+    <div class="container">
+
+      <form class="form-signin" enctype="multipart/form-data" action="/upload" method="post" >
+	{% raw xsrf_form_html() %}
+        <h2 class="form-signin-heading">文件上传</h2>
+
+        <input type="file" name="file"  required>
+	<br />
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">提交</button>
+      </form>
+
+    </div> 
+{% end %}

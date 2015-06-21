@@ -1,0 +1,14 @@
+{% extends "main.html" %}
+{% block body %}
+    <h2>图片测试</h2>
+    <div id="notify"></div>
+    <button type="button" onclick="getnewpic()">获取最新</button>
+    <div id="new"></div>
+
+    {% for pic in piclist %}
+    	{%raw modules.Picture(pic) %}
+    {% end %}
+    <div id="more"></div>
+    <button type="button" onclick="loadmorepic()">加载更多</button>
+{% end %}
+
