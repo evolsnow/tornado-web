@@ -15,7 +15,7 @@ from bson import ObjectId
 from tornado.options import define, options
 
 define("port", default=8000, help="run on the given port", type=int)
-define("loadnum", default=2, help="pic number to load adt once", type=int)
+define("loadnum", default=10, help="pic number to load adt once", type=int)
 
 class Application(tornado.web.Application):                        
     def __init__(self):
@@ -23,6 +23,7 @@ class Application(tornado.web.Application):
                 (r"/", MainHandler),
 		(r"/register", RegHandler),
                 (r"/login", LoginHandler),
+                (r"/logout", LogOutHandler),
                 (r"/loadmore", LoadMoreHandler),
 		(r"/upload",UploadFileHandler),
                 (r"/ajax", NewPicNotifyHandler),
@@ -124,6 +125,11 @@ class LoginHandler(BaseHandler):
                 next= self.get_argument("next", "/"), 
                 warning_message= warning)
         self.render("login_reg.html", **kwargs)
+
+class LogOutHandler(BaseHandler):
+    def get(self):
+        self.clear_all_cookies()
+        self.redirect("/")
 
 class UploadFileHandler(BaseHandler):
     '''图片上传handler,需要先登录'''
