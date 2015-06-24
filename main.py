@@ -64,6 +64,10 @@ class MainHandler(BaseHandler):
                     "owner": pic["owner"], "_id": pic["_id"]}
             self.piclist.append(src)
         try:
+            self.username = self.get_secure_cookie("user")
+        except:
+            self.username = ""
+        try:
             self.set_cookie("_id", str(pic["_id"]))
         finally:
             self.set_cookie("first_id", str(self.piclist[0]["_id"]))
@@ -205,11 +209,10 @@ class LoadMoreHandler(BaseHandler):
     '''
     图片加载函数,一次加载options.loadnum张,
     如果最后加载张数不达,则全部加载
-    具体方法为渲染div,第一次写n张
-    第二次写2n张...
     '''
     @tornado.gen.coroutine
     def get(self):
+        time.sleep(0.8)
         db_pic = self.application.db.pic
         cid = ObjectId(self.get_cookie("_id"))
         cursor = db_pic.find({'_id': {'$lt': cid}}).sort([('_id', -1)])     
@@ -261,9 +264,10 @@ class AddCommentHandler(BaseHandler):
     def post(self):
         user = self.get_secure_cookie("username")
         comment = self.get_argument("comment")
-        time.sleep(0.5)
-        self.write("<br />")
-        self.write(comment)
+        if comment:
+            time.sleep(0.5)
+            self.write(comment)
+            self.write("<br />")
 
 class PictureModule(tornado.web.UIModule):
     '''

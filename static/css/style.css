@@ -10,10 +10,10 @@
 	position:fixed;
 	top:0;
 }
-/*.header1,*/.container
+/*.header1,*/.container2
 {
 	margin:0 auto;
-	width:100%;
+	width:1000px;
 	border:0;
 	padding:0;
 	text-align:center;
@@ -23,7 +23,7 @@ ul
 	list-style-type:none;
 	margin:0;
 	padding:0;
-	overflow:hidden;
+
 }
 li
 {
@@ -41,15 +41,56 @@ ul a:link, a:visited
 }
 ul a:hover
 {
-	background-color:#4f0a8f;
+	background-color:#1246d5;
 }
-
+fieldset.search {
+    padding: 0;
+    border-radius: 5px 5px;
+    width: 200px;
+    background:#e0e0e0;
+}
+fieldset.search:hover {
+    background:#a8a8a8;
+	border-radius: 5px 5px;
+}
+.search input,.search button {
+    border:none;
+    float: left;
+}
+.search input.box {
+    height: 20px;
+    width: 180px;
+    margin:0;
+    padding-right: 0;
+    background:#e0e0e0;
+	border-radius: 5px 5px;
+}
+.search input.box:focus {
+    background: #e8e8e8 ;
+    outline:none;
+	border-radius: 5px 5px;
+}
+.search button.btn1:hover {
+    background: url(../img/search_black.png) no-repeat bottom right;
+}
+.search button.btn1 {
+    border: none;
+    width: 20px;
+    height: 20px;
+    margin: 0 auto;
+    background: url(../img/search_blue.png) no-repeat top right;
+}
+.headpic1
+{
+	width:30px;
+	height:30px;
+}
 
 /*---------------------body---------------------*/
 .bg
 {	
 	background-color:#e2e2e2;
-	margin:4% 0 0 0;
+	margin:50px 0 0 0;
 	padding:0;
 	border:0;
 }
@@ -74,7 +115,7 @@ ul a:hover
 {	
 	float:left;
 	margin-top:10px;
-	border-radius:3px 3px;
+	border-radius:5px 5px;
 
 }
 .left
@@ -84,18 +125,24 @@ ul a:hover
 .middle
 {	
 	margin-left:10px;
-	width:600px;
+	width:650px;
 }
 
-.left-container,.left-div2,.middle-container,.div1
+.left-container,.middle-container,.left-div2,.div1
 {
 	margin:0;
 	padding:0;
 	border:0;
 }
+.left-div2
+{
+	background-color:#0664c3;
+	border-bottom-left-radius:5px;
+	border-bottom-right-radius:5px;
+}
 .left-container,.middle-container,.FYI
 {
-	border-radius:3px 3px;
+	border-radius:5px 5px;
 	background-color:white;
 }
 .div1,.div3
@@ -104,22 +151,31 @@ ul a:hover
 }
 .div2
 {
-	margin-top:5px;
+	
+	margin:5px 0 3px 0;
+	text-align:center;
 	padding:0;
 	border:0;
 }
 .photo
 {
-	margin:3px;
-	max-width:550px;
-	width:expression(this.width > 550px ? 550px : true);
+	margin:0;
+	max-width:610px;
+	width:expression(this.width > 610px ? 610px : true);
 	height:auto;
 }
 .div3
 {	
-	margin-top:5px;
+	border:0;
+	margin-top:3px;
 }
-.headpic
+.headpic2
+{
+	margin:3px 3px;
+	width:50px;
+	height:50px;
+}
+.headpic3
 {
 	margin:3px 3px;
 	width:40px;
@@ -129,7 +185,14 @@ ul a:hover
 .left-div2-a:link, .left-div2-a:visited
 {
 	font-weight:bold;
-	color:#0664c3;
+	color:#fff;
 	text-decoration:none;
 }
-
+.like-sign
+{
+	margin:0 0 0 40px;
+}
+.maintext{
+	margin:0 0 0 40px;
+	text-align: left;
+}

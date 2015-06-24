@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <title>图片分享平台</title>
+  <title>PicSoc 属于你的图片社交网站</title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta name="author" content="ShannonGu&Evollost" />
+    <meta name="Copyright" content="Copyright PicSoc.me All Rights Reserved." />
     <!-- Bootstrap core CSS -->
     <link href="{{ static_url("css/bootstrap.min.css") }}" rel="stylesheet">
 
     <!-- Custom styles  -->
     <link href="{{ static_url("css/signin.css") }}" rel="stylesheet">
     <link rel="icon" href="{{ static_url("favicon.ico") }}">
-
+  {% block head %}{% end %}
   </head>
 
   <body>

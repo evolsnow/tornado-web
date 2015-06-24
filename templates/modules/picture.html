@@ -1,4 +1,28 @@
+    <div class="middle-container">	
+	<div class="div1">
+		<img class="headpic3" src="{{static_url("img/logo.png")}}">
+		<label>{{picture["owner"]}}</label>
+	</div>
+		<hr class="hr2" >
+
+	<div class="div2">
+			<img class="photo" src="{{picture["picurl"]}}">
+	</div>	
+
+	<div class="div3">
+		<img id=heart{{picture["_id"]}} class="like-sign" onclick="likeornot(this.id)" src="/static/img/like.png">
+		<img id={{picture["_id"]}} onclick="addcomment(this.id)"  src="{{static_url("img/talk.png")}}">
+		<hr class="hr2">
+	</div>
+
+	<div id=ms{{picture["_id"]}} class="maintext" style="display:none"></div>
+	<div id=divs{{picture["_id"]}}c class = "maintext" style="display:none">
+	<input type="text" id=ts{{picture["_id"]}}c placeholder="添加评论..."/>
+	<button type="button" id=s{{picture["_id"]}} class="btn btn-info btn-xs" onclick="submitcomment(this.id)">提交</button>
+	<button type="button" id={{picture["_id"]}}c class="btn btn-default btn-xs" onclick="cancelcomment(this.id)">取消</button>
+	</div>
+    </div>
 <div>
-   <h3>{{picture["owner"]}}</h3>
-   <img src="{{picture["picurl"]}}" />
+	<br />
+	<br />
 </div>

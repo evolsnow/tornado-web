@@ -1,5 +1,6 @@
 //keep notify for new pic
 $(document).ready(function() {
+
  var error_sleep_time = 500;
     function poll() {
         $.ajax({
@@ -9,7 +10,7 @@ $(document).ready(function() {
 		if (result=="new")
 		    {
                // getnewpic();
-			$("#notify").html("new pic!");
+                        $("#notify_logo").attr("src","/static/img/favicon3.png");
 		    }
 		else
 			{
@@ -25,12 +26,15 @@ $(document).ready(function() {
         });
     }
     poll();
+    auto();
 });
 
 // get latest pic
 function getnewpic()
 {
   $.get("/getnewpic", function(result){
+    $("#notify_logo").attr("src","/static/img/logo.png");
+    $('body,html').animate({scrollTop:0},500);
     $("#new").prepend(result)
   });
 };
@@ -83,7 +87,9 @@ function submitcomment(submit_button_id)
     $.post("/addcomment", data, function(result,status){
             if(status == "success")
             {
+                $(main_id).fadeIn("slow");
 		$(main_id).append(result);
+
             }
             else
             {
@@ -104,3 +110,26 @@ function cancelcomment(cancel_button_id)
 
 };
 
+
+//like or not like
+function likeornot(heart_button_id)
+{
+    var id = "#" + heart_button_id;
+
+    if (($(id).attr("src"))=="/static/img/like.png")
+        {
+        $(id).attr("src","/static/img/like_red.png");
+        }
+    else
+        {
+        $(id).attr("src","/static/img/like.png");
+        };
+};
+
+function auto(){
+	$(window).scroll(function(){
+if ($(this).scrollTop() + $(window).height() >= $(document).height() && $(this).scrollTop() > 20) {
+loadmorepic();
+}
+});
+}
