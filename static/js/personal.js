@@ -114,16 +114,36 @@ function cancelcomment(cancel_button_id)
 //like or not like
 function likeornot(heart_button_id)
 {
+  var user = getCookie("user")+""
+    if (user == "undefined")
+	{
+	location.href ="/login";
+	}
+    else
+	{
     var id = "#" + heart_button_id;
-
     if (($(id).attr("src"))=="/static/img/like.png")
         {
         $(id).attr("src","/static/img/like_red.png");
+    	data={
+        	status:"yes",
+        	_xsrf:getCookie("_xsrf"),
+        	id:heart_button_id
+        	};
         }
     else
         {
         $(id).attr("src","/static/img/like.png");
+    	data={
+        	status:"no",
+        	_xsrf:getCookie("_xsrf"),
+        	id:heart_button_id
+        	};
         };
+
+$.post("/like", data, function(result,status){});
+};
+
 };
 
 function auto(){

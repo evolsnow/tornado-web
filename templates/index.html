@@ -42,7 +42,7 @@
 
 			<label><a href="/login" ><font color="white">登录</font></a></label>
 &nbsp;&nbsp;&nbsp;&nbsp;
-			<label ><a href="/logout" ><font color="white">注销</font></a></label>
+			<label ><a href="/register" ><font color="white">注册</font></a></label>
 {%end%}
 
 			</td>
@@ -58,7 +58,7 @@
 			<div class="left-container">
 				<div class="div1">
 {% if handler.username %}
-					<img class="headpic2" src="{{static_url("avatar/root.jpg")}}">
+					<a href="/avatar"><img  class="headpic2" src="{{handler.avatar}}" ></a>
 					<label>{{handler.username}}</label>
 {%else%}
 					<img class="headpic2" src="{{static_url("avatar/guest.png")}}">
@@ -80,7 +80,8 @@
 			</div>
 			<br />
 			<div class="FYI">
-			<p style="color:gray">Copyright © PicSoc.me 2015 All Rights Reserved</p>
+			<p style="color:gray">Copyright © 2015 PicSoc.com</p>
+ 			<p style="color:gray">All Rights Reserved</p>
 			</div>
 		</div>
 	</div>
@@ -92,7 +93,7 @@
 			
 				
     {% for pic in piclist %}
-    	{%raw modules.Picture(pic) %}
+    	{%raw modules.Picture(pic, liked) %}
     {% end %}
 
 			

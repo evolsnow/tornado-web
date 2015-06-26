@@ -1,9 +1,9 @@
 {% extends "main.html" %}
 {% block body %}
     <div class="container">
-      <form class="form-signin" enctype="multipart/form-data" action="/upload" method="post" >
+      <form class="form-signin" enctype="multipart/form-data" action="/avatar" method="post" >
 	{% raw xsrf_form_html() %}
-        <h2 class="form-signin-heading">图片上传</h2>
+        <h2 class="form-signin-heading">头像上传</h2>
 
         <input type="file" name="file" class="btn btn-default btn-file" required>
 	<br />

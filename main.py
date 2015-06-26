@@ -25,8 +25,10 @@ class Application(tornado.web.Application):
                 (r"/login", LoginHandler),
                 (r"/logout", LogOutHandler),
                 (r"/loadmore", LoadMoreHandler),
-		(r"/upload",UploadFileHandler),
+		(r"/upload", UploadFileHandler),
+                (r"/avatar", UploadAvatar),
                 (r"/ajax", NewPicNotifyHandler),
+                (r"/like", LikeOrNotHandler),
                 (r"/addcomment", AddCommentHandler),
                 (r"/getnewpic", GetNewPicHandler)]
         settings = dict(
@@ -56,22 +58,44 @@ class MainHandler(BaseHandler):
     @tornado.gen.coroutine
     def get(self):
         db_pic = self.application.db.pic
+        db_user = self.application.db.user
         cursor = db_pic.find().sort([('_id', -1)]).limit(options.loadnum)
         self.piclist = []
         while (yield cursor.fetch_next):
             pic = cursor.next_object()
+            owner_avatar = yield db_user.find_one({"name": pic["owner"]})
+            try:
+                comment = pic["comment"]
+            except:
+                comment = None
+            try:
+                content_avatar = owner_avatar["avatar_path"] + \
+                        owner_avatar["avatar_name"]
+            except:
+                content_avatar = "static/avatar/guest.png"
             src = {"picurl": pic["pic_path"] + pic["pic_name"],
-                    "owner": pic["owner"], "_id": pic["_id"]}
+                    "owner": pic["owner"], "_id": pic["_id"], 
+                    "comment": comment, "head_pic_url": content_avatar}
             self.piclist.append(src)
         try:
             self.username = self.get_secure_cookie("user")
+            doc = yield db_user.find_one({"name": self.username})
+            try:
+                self.liked_pic = doc["liked_pic"]
+            except:
+                self.liked_pic = []
+            try:
+                self.avatar = doc["avatar_path"] + doc["avatar_name"]
+            except:
+                self.avatar = "static/avatar/guest.png"
         except:
             self.username = ""
+            self.liked_pic = []
         try:
             self.set_cookie("_id", str(pic["_id"]))
         finally:
             self.set_cookie("first_id", str(self.piclist[0]["_id"]))
-            self.render("index.html", piclist=self.piclist)
+            self.render("index.html", piclist=self.piclist, liked=self.liked_pic)
         
 class RegHandler(BaseHandler):
     '''
@@ -156,7 +180,7 @@ class UploadFileHandler(BaseHandler):
         if suffix.lower() in ('jpg', 'jpeg', 'gif', 'bmp', 'png'):
             img = Image.open(StringIO.StringIO(f['body']))
             img.save(self.path + self.dstname)
-            self.save_to_db(self.dstname, self.path)
+            self.save_to_db_pic(self.dstname, self.path)
             NewPicNotifyHandler.send_message("new")
         else:
             self.write("<script>alert('图片格式错误!')</script>")
@@ -173,15 +197,45 @@ class UploadFileHandler(BaseHandler):
     
     
     @tornado.gen.coroutine
-    def save_to_db(self, pic_name, pic_path):
+    def save_to_db_pic(self, pic_name, pic_path):
         '''
         存入数据库,包含图片名字,路径,所有者
         后期图片评论和点赞数通过update方法写入
         '''
-        pic_db = self.application.db.pic
+        db_pic = self.application.db.pic
         dic = {"pic_name": pic_name, "pic_path": pic_path,
                 "owner": self.get_secure_cookie("user")}
-        pic_db.insert(dic)
+        db_pic.insert(dic)
+
+class UploadAvatar(BaseHandler):
+    '''上传头像'''
+    @tornado.web.authenticated
+    def get(self):
+        self.render("avatar.html")
+
+    @tornado.web.authenticated
+    def post(self):
+        '''同一用户只有一个头像'''
+        f = self.request.files['file'][0]
+        suffix = f['filename'].split('.')[-1]
+        self.user = self.get_secure_cookie("user")
+        self.avatarname = self.user + '.' + suffix.lower()
+        self.path = "static/avatar/"
+        if suffix.lower() in ('jpg', 'jpeg', 'bum', 'png'):
+            img = Image.open(StringIO.StringIO(f['body']))
+            img.save(self.path + self.avatarname)
+            self.save_to_db_user(self.avatarname, self.path, self.user)
+        else:
+            self.write("<script>alert('图片格式错误')</script>")
+        self.redirect("/")
+    
+    @tornado.gen.coroutine
+    def save_to_db_user(self, avatarname, path, user):
+        db_user = self.application.db.user
+        doc = yield db_user.find_one({"name": user})
+        _id = doc['_id']
+        dic = {"avatar_name": avatarname, "avatar_path": path}
+        yield db_user.update({'_id': _id}, {'$set': dic})
 
 class GetNewPicHandler(BaseHandler):
     '''
@@ -261,20 +315,44 @@ class NewPicNotifyHandler(BaseHandler):
                 cls.callbacks = set()
 
 class AddCommentHandler(BaseHandler):
+    @tornado.gen.coroutine
     def post(self):
-        user = self.get_secure_cookie("username")
+        user = str(self.get_secure_cookie("user"))
+        pic_id = ObjectId(self.get_argument("id")[1:])
         comment = self.get_argument("comment")
+        db_pic = self.application.db.pic
         if comment:
+            new_comment = {user: comment}
+            dic = {"comment": new_comment}
+            try:
+                yield db_pic.update({'_id': pic_id}, {'$push': dic})
+            except:
+                yield db_pic.update({'_id': pic_id}, {'$set': dic})
             time.sleep(0.5)
-            self.write(comment)
-            self.write("<br />")
+            result = '<a class="v_a" href="/user/' + user + '">' + \
+                    user + '</a>: <span>' + comment + '</span><br />'
+            self.write(result)
+
+class LikeOrNotHandler(BaseHandler):
+    @tornado.gen.coroutine
+    def post(self):
+        user = str(self.get_secure_cookie("user"))
+        pic_id = ObjectId(self.get_argument("id")[5:])
+        status = self.get_argument("status")
+        db_user = self.application.db.user
+        dic = {"liked_pic": pic_id}
+        if status == "yes":
+            yield db_user.update({"name": user}, {'$push': dic})
+        if status == "no":
+            yield db_user.update({'name': user}, {'$pop': dic})
 
 class PictureModule(tornado.web.UIModule):
     '''
     ui渲染模块,渲染首页用
     '''
-    def render(self, picture):
-        return self.render_string("modules/picture.html", picture=picture)
+    def render(self, picture, liked):
+        return self.render_string("modules/picture.html", picture=picture,
+                liked=liked)
 
 def main():
     tornado.options.parse_command_line()

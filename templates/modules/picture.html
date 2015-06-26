@@ -1,6 +1,6 @@
     <div class="middle-container">	
 	<div class="div1">
-		<img class="headpic3" src="{{static_url("img/logo.png")}}">
+		<img class="headpic3" src="{{picture["head_pic_url"]}}">
 		<label>{{picture["owner"]}}</label>
 	</div>
 		<hr class="hr2" >
@@ -10,12 +10,27 @@
 	</div>	
 
 	<div class="div3">
+	{% if picture["_id"] in liked %}
+		<img id=heart{{picture["_id"]}} class="like-sign" onclick="likeornot(this.id)" src="/static/img/like_red.png">
+{%else%}
 		<img id=heart{{picture["_id"]}} class="like-sign" onclick="likeornot(this.id)" src="/static/img/like.png">
+{%end%}
+
 		<img id={{picture["_id"]}} onclick="addcomment(this.id)"  src="{{static_url("img/talk.png")}}">
+
 		<hr class="hr2">
 	</div>
-
+	{% if picture["comment"] %}
+	<div id=ms{{picture["_id"]}} class="maintext">
+	{% for com in picture["comment"] %}
+	{% for key in com %}
+	<a class="v_a" href="/user/{{key}}">{{key}}</a>: {{ com[key] }}<br />
+	{%end%}
+	{%end%}
+</div>
+	{%else%}
 	<div id=ms{{picture["_id"]}} class="maintext" style="display:none"></div>
+	{%end%}
 	<div id=divs{{picture["_id"]}}c class = "maintext" style="display:none">
 	<input type="text" id=ts{{picture["_id"]}}c placeholder="添加评论..."/>
 	<button type="button" id=s{{picture["_id"]}} class="btn btn-info btn-xs" onclick="submitcomment(this.id)">提交</button>
