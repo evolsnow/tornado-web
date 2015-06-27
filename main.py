@@ -30,7 +30,8 @@ class Application(tornado.web.Application):
                 (r"/ajax", NewPicNotifyHandler),
                 (r"/like", LikeOrNotHandler),
                 (r"/addcomment", AddCommentHandler),
-                (r"/getnewpic", GetNewPicHandler)]
+                (r"/getnewpic", GetNewPicHandler),
+                (r".*", ErrorHandler)]
         settings = dict(
                 cookie_secret=
                 "19N9ViOvRmmikCmFiW4ZBYgo17MZ6k+auNmdk+Aa18I=",
@@ -49,6 +50,18 @@ class Application(tornado.web.Application):
 class BaseHandler(tornado.web.RequestHandler):                     
     def get_current_user(self):
         return self.get_secure_cookie("user")
+
+class ErrorHandler(BaseHandler):
+    def get(self):
+        self.write_error(404)
+
+    def write_error(self, status_code):
+        if status_code == 404:
+            self.render("404.html")
+        elif status_code == 500:
+            self.write("500 error")
+        else:
+            self.write('error:' + str(status_code))
 
 class MainHandler(BaseHandler):
     '''

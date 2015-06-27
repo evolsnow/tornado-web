@@ -64,8 +64,10 @@ function addcomment(add_button_id)
 	}
     else
 	{
+  var text_id = "#ts" + add_button_id + "c"
   var div_id ="#divs" + add_button_id + "c";
   $(div_id).slideToggle("fast");
+  $(text_id).focus();
 	};
 };
 
