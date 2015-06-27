@@ -95,7 +95,8 @@ class MainHandler(BaseHandler):
             self.set_cookie("_id", str(pic["_id"]))
         finally:
             self.set_cookie("first_id", str(self.piclist[0]["_id"]))
-            self.render("index.html", piclist=self.piclist, liked=self.liked_pic)
+            self.render("index.html", piclist=self.piclist, 
+                    liked=self.liked_pic)
         
 class RegHandler(BaseHandler):
     '''
@@ -203,8 +204,17 @@ class UploadFileHandler(BaseHandler):
         后期图片评论和点赞数通过update方法写入
         '''
         db_pic = self.application.db.pic
+        db_user = self.application.db.user
+        owner = self.get_secure_cookie("user")
+        owner_avatar = yield db_user.find_one({"name": owner})
+        try:
+            content_avatar = owner_avatar["avatar_path"] + \
+                    owner_avatar["avatar_name"]
+        except:
+            content_avatar = "static/avatar/guest.png"
         dic = {"pic_name": pic_name, "pic_path": pic_path,
-                "owner": self.get_secure_cookie("user")}
+                "head_pic_url": content_avatar,
+                "owner": owner}
         db_pic.insert(dic)
 
 class UploadAvatar(BaseHandler):
@@ -251,8 +261,12 @@ class GetNewPicHandler(BaseHandler):
             pic = cursor.next_object()
             pic["picurl"] = pic["pic_path"] + pic["pic_name"]
             idlist.append(pic["_id"])
+            try:
+                pic["comment"] = pic["comment"]
+            except:
+                pic["comment"] = None
             string = self.render_string("modules/picture.html",
-                    picture=pic)
+                    picture=pic, liked=[])
             self.write(string)
         try:
             self.set_cookie("first_id", str(idlist[0]))
@@ -268,18 +282,35 @@ class LoadMoreHandler(BaseHandler):
     def get(self):
         time.sleep(0.8)
         db_pic = self.application.db.pic
+        db_user = self.application.db.user
         cid = ObjectId(self.get_cookie("_id"))
         cursor = db_pic.find({'_id': {'$lt': cid}}).sort([('_id', -1)])     
         try:
             cursor = cursor[0: options.loadnum]
         except:
             cursor = cursor
+        doc = yield db_user.find_one({"name": self.get_secure_cookie("user")})
+        try:
+            liked_pic = doc["liked_pic"]
+        except:
+            liked_pic = []
         while (yield cursor.fetch_next):
             pic = cursor.next_object()
-            pic["picurl"]=pic["pic_path"] + pic["pic_name"]
+            owner_avatar = yield db_user.find_one({"name": pic["owner"]})
+            try:
+                content_avatar = owner_avatar["avatar_path"] + \
+                        owner_avatar["avatar_name"]
+            except:
+                content_avatar = "static/avatar/guest.png"
+            pic["picurl"] = pic["pic_path"] + pic["pic_name"]
+            pic["head_pic_url"] = content_avatar
             self.set_cookie("_id", str(pic["_id"]))
-            string = self.render_string("modules/picture.html", 
-                                        picture=pic)
+            try:
+                pic["comment"] = pic["comment"]
+            except:
+                pic["comment"] = None
+            string = self.render_string("modules/picture.html",
+                    picture=pic, liked=liked_pic)
             self.write(string)
 
 class NewPicNotifyHandler(BaseHandler):
