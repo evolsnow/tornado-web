@@ -327,6 +327,9 @@ class LoadMoreHandler(BaseHandler):
             self.write(string)
 
 class NewPicNotifyHandler(BaseHandler):
+    '''
+    新上传图片顶部推送通知，基于AJAX长连接。
+    '''
     callbacks = set()
     users = set()
 
@@ -359,6 +362,9 @@ class NewPicNotifyHandler(BaseHandler):
                 cls.callbacks = set()
 
 class AddCommentHandler(BaseHandler):
+    '''
+    评论添加
+    '''
     @tornado.gen.coroutine
     def post(self):
         user = str(self.get_secure_cookie("user"))
@@ -372,12 +378,16 @@ class AddCommentHandler(BaseHandler):
                 yield db_pic.update({'_id': pic_id}, {'$push': dic})
             except:
                 yield db_pic.update({'_id': pic_id}, {'$set': dic})
-            time.sleep(0.5)
+            #TO-DO:延迟动画应交给前端js完成
+            yield gen.Task(IOLoop.instance().add_timeout, time.time() + 0.5)
             result = '<a class="v_a" href="/user/' + user + '">' + \
                     user + '</a>: <span>' + comment + '</span><br />'
             self.write(result)
 
 class LikeOrNotHandler(BaseHandler):
+    '''
+    点赞
+    '''
     @tornado.gen.coroutine
     def post(self):
         user = str(self.get_secure_cookie("user"))
